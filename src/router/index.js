@@ -4,15 +4,15 @@ import VueRouter from 'vue-router';
 // 安装插件
 Vue.use(VueRouter);
 
-// 创建router并导出
+// 创建routes
 const Home = () =>
-    import ('../views/home/Home.vue')
+    import ('views/home/Home.vue')
 const Category = () =>
-    import ('../views/category/Category.vue')
+    import ('views/category/Category.vue')
 const Shopcat = () =>
-    import ('../views/shopcat/Shopcat.vue')
+    import ('views/shopcat/Shopcat.vue')
 const Profile = () =>
-    import ('../views/profile/Profile.vue')
+    import ('views/profile/Profile.vue')
 
 const routes = [{
         path: '',
@@ -27,7 +27,7 @@ const routes = [{
         path: '/category',
         name: 'category',
         component: Category
-    }, ,
+    },
     {
         path: '/shopcat',
         name: 'shopcat',
@@ -39,7 +39,11 @@ const routes = [{
         component: Profile
     }
 ]
-export const router = new VueRouter({
+
+// 创建router并导出
+const router = new VueRouter({
     mode: 'history',
     routes
-});
+})
+
+export default router;
