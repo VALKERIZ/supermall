@@ -1,13 +1,46 @@
 <template>
-  <h2>首页</h2>
+  <div id="home">
+    <NavBar class="home-nav">
+      <template #center><div>购物节</div></template>
+    </NavBar>
+    <!-- 轮播图 -->
+    <HomeSwiper :banners="banners"></HomeSwiper>
+  </div>
 </template>
 
 <script>
-export default {
+import NavBar from 'components/common/navbar/NavBar'
+import HomeSwiper from './childComps/HomeSwiper';
 
+import {getHomeMultidata} from 'network/home'
+
+export default {
+  name: "Home",
+  components:{
+    NavBar,
+    HomeSwiper
+  },
+  data(){
+    return{
+      banners:[],
+      recommends:[]
+    }
+  },
+  created(){
+    // 请求多个数据
+    getHomeMultidata().then(res =>{
+      console.log(res);
+      
+      this.banners = res.data.banner.list
+      this.recommends = res.data.recommend.list
+    })
+  }
 }
 </script>
 
 <style>
-
+  .home-nav{
+    background-color: var(--color-tint);
+    color: #fff;
+  }
 </style>
