@@ -6,13 +6,15 @@ Vue.use(VueRouter);
 
 // 创建routes
 const Home = () =>
-    import ('views/home/Home.vue')
+    import ('views/home/Home')
 const Category = () =>
-    import ('views/category/Category.vue')
+    import ('views/category/Category')
 const Shopcat = () =>
-    import ('views/shopcat/Shopcat.vue')
+    import ('views/shopcat/Shopcat')
 const Profile = () =>
-    import ('views/profile/Profile.vue')
+    import ('views/profile/Profile')
+const Detail = () =>
+    import ('views/detail/Detail')
 
 const routes = [{
         path: '',
@@ -37,6 +39,11 @@ const routes = [{
         path: '/profile',
         name: 'profile',
         component: Profile
+    },
+    {
+        path: '/detail/:iid',
+        name: 'detail',
+        component: Detail
     }
 ]
 
