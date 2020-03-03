@@ -29,8 +29,11 @@ export default {
   mounted(){
     // 1.创建 better-scroll对象
     this.scroll = new BScroll(this.$refs.wrapper, {
+      // 默认点击事件
       click: true,
+      // 跟踪滚动
       probeType: this.probeType,
+      // 上拉加载
       pullUpLoad:this.pullUpLoad
     })
     // 2.监听滚动事件
@@ -58,6 +61,9 @@ export default {
     },
     getScrollY(){
       return this.scroll ? this.scroll.y : 0
+    },
+    scrollToElement(){
+      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
     }
   }
 }

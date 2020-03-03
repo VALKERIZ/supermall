@@ -10,7 +10,7 @@ const Home = () =>
 const Category = () =>
     import ('views/category/Category')
 const Shopcat = () =>
-    import ('views/shopcat/Shopcat')
+    import ('views/cart/Cart')
 const Profile = () =>
     import ('views/profile/Profile')
 const Detail = () =>

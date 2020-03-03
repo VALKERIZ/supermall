@@ -1,7 +1,7 @@
 <template>
   <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
-    <div class="goods-info">
+    <img :src="showImage" alt="" @load="imageLoad">
+    <div class="goods-item-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
       <span class="collect">{{goodsItem.cfav}}</span>
@@ -22,17 +22,34 @@ export default {
   },
   methods:{
     imageLoad(){
+    //  if(this.$route.path.indexOf('/home')){
+    //     this.$bus.$emit('homeItemImageLoad')
+    //  }else if(this.$route.path.indexOf('/detail')){
+    //    this.$bus.$emit('detailItemImageLoad')
+    //  }
       this.$bus.$emit('itemImageLoad')
     },
-    // 鉴定商品点击
+    // 监听商品点击
     itemClick(){
-      this.$router.push('/detail/' + this.goodsItem.iid)
+      if(this.goodsItem.iid){
+        // 点击Home页面中的商品
+        this.$router.push('/detail/' + this.goodsItem.iid)
+      }else{
+        // 点击商品详细页面中的推荐商品
+        this.$router.push('/detail/' + this.goodsItem.item_id)
+      }
+      
+    }
+  },
+  computed:{
+    showImage(){
+      return this.goodsItem.image || this.goodsItem.show.img
     }
   }
 }
 </script>
   
-<style>
+<style scoped>
   .goods-item{
     padding-bottom: 40px;
     position: relative;
@@ -42,7 +59,7 @@ export default {
     width: 100%;
     border-radius: 5px;
   }
-  .goods-info{
+  .goods-item-info{
     font-size: 12px;
     position: absolute;
     bottom: 5px;
@@ -51,20 +68,20 @@ export default {
     overflow: hidden;
     text-align: center;
   }
-  .goods-info p {
+  .goods-item-info p {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-bottom: 3px;
   }
-  .goods-info .price{
+  .goods-item-info .price{
     color: var(--color-high-text);
     margin-right: 20px;
   }
-  .goods-info .collect{
+  .goods-item-info .collect{
     position: relative;
   }
-  .goods-info .collect::before{
+  .goods-item-info .collect::before{
     content: '';
     position: absolute;
     left: -15px;

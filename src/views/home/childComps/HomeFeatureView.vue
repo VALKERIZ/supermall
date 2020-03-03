@@ -8,7 +8,12 @@
 
 <script>
 export default {
-  name:"HomeFeatureView"
+  name:"HomeFeatureView",
+  data(){
+    return{
+      isLoad: false
+    }
+  },
 }
 </script>
 

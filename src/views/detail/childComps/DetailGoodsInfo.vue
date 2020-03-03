@@ -41,11 +41,15 @@
     },
     methods: {
 	    imgLoad() {
-        // 判断，所有图片都加载完了，进行一次回调
-        if (++this.counter === this.imagesLength) {
-	        this.$emit('imageLoad')
-        }
-	    }
+        // 取巧的方式
+        // // 判断，所有图片都加载完了，进行一次回调
+        // if (++this.counter === this.imagesLength) {
+	      //   this.$emit('imageLoad')
+        // }
+
+        // 使用混入的防抖
+        this.$emit('imageLoad')
+      } 
     },
     
 	}

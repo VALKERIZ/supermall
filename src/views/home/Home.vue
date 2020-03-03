@@ -5,7 +5,7 @@
       <template #center><div>购物街</div></template>
     </NavBar>
     <!-- 吸顶选项栏，实现停留效果 -->
-    <TabControl :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl1" v-show="isTabFixed"></TabControl>
+    <TabControl :titles="['流行','新款','精选']" @tabClick="tabClick" ref="topTabControl" v-show="isTabFixed"></TabControl>
 
     <Scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll" :pullUpLoad="true" @pullingUp="loadMore">   
       <!-- 轮播图 -->
@@ -15,7 +15,7 @@
       <!-- 本周流行 -->
       <HomeFeatureView></HomeFeatureView>
       <!-- 选项 -->
-      <TabControl :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl2" ></TabControl>
+      <TabControl :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl" ></TabControl>
       <!-- 商品展示 -->
       <GoodsList :goods="showGoods"></GoodsList>
     </Scroll>
@@ -33,10 +33,11 @@ import NavBar from 'components/common/navbar/NavBar'
 import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
-import BackTop from 'components/content/backTop/BackTop'
+
 
 import {getHomeMultidata,getHomeGoods,} from 'network/home'
-import {debounce} from 'common/utils'
+import {itemListenerMixin,backTopMixin} from 'common/mixin'
+
 
 export default {
   name: "Home",
@@ -48,8 +49,8 @@ export default {
     HomeFeatureView,
     GoodsList,
     Scroll,
-    BackTop,
   },
+  mixins:[itemListenerMixin,backTopMixin],
   data(){
     return{
       banners:[],
@@ -60,7 +61,6 @@ export default {
         'sell':{page: 0, list: []},
       },
       currentType: 'pop',
-      isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
@@ -75,24 +75,15 @@ export default {
     this.getHomeGoods('new')
     this.getHomeGoods('sell')
   },
-  mounted(){
-    // 1.监听图片加载完成
-    const refresh = debounce(this.$refs.scroll.refresh, 200)
-    this.$bus.$on('itemImageLoad', () =>{
-      // 进行防抖操作
-      refresh()
-    })
-  },
-  // 清除图片加载事件
-  destroyed(){
-    this.$bus.$off('itemImageLoad')
-  },
   activated(){
     this.$refs.scroll.scrollTo(0, this.saveY, 0)
     this.$refs.scroll.refresh()
   },
   deactivated(){
+    // 1.保存离开页面时的Y值
     this.saveY = this.$refs.scroll.getScrollY()
+    // 2.取消图片加载的全局事件的监听
+    this.$bus.$off('itemImageLoad', this.itemImgListener)
   },
   computed:{
     showGoods(){
@@ -131,15 +122,12 @@ export default {
           break;
       }
       // 保存tab-control的选中一致
-      this.$refs.tabControl1.currentType = index;
-      this.$refs.tabControl2.currentType = index;
-    },
-    backClick(){
-      this.$refs.scroll.scrollTo(0, 0, 500)
+      this.$refs.topTabControl.currentIndex = index;
+      this.$refs.tabControl.currentIndex = index;
     },
     contentScroll(position){
       // 1.判断backTop是否显示
-      this.isShowBackTop = (-(position.y) > 1000)
+      this.listenShowBackTop(position)
 
       // 2. 判断tabControl是否吸顶
       this.isTabFixed = (-(position.y) > this.tabOffsetTop)
@@ -148,8 +136,8 @@ export default {
       this.getHomeGoods(this.currentType)
     },
     swiperImageLoad(){ 
-      // 获取tabControl的offsetTop
-      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop 
+      // 轮播图加载完成后，获取tabControl的offsetTop
+      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop 
     },
   }
 }
