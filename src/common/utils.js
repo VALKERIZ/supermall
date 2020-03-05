@@ -1,13 +1,44 @@
-// 防抖函数
+// 防抖函数 非立即执行
 export function debounce(func, delay) {
     let timer = null
-    return function(...args) {
+    return function() {
+        let context = this
+        let args = arguments
         if (timer) {
             clearTimeout(timer)
         }
         timer = setTimeout(() => {
-            func.apply(this, args)
+            func.apply(context, args)
         }, delay);
+    }
+}
+
+//节流函数 时间段内结束时触发
+// export function throttle(func, delay) {
+//     let timer = null
+//     return function() {
+//         let context = this
+//         let args = arguments
+//         if (!timer) {
+//             timer = setTimeout(() => {
+//                 timer = null
+//                 func.apply(context, args)
+//             }, delay);
+//         }
+//     }
+// }
+
+//节流函数 时间段内开始时触发
+export function throttle(func, delay) {
+    let previous = 0
+    return function() {
+        let context = this
+        let args = arguments
+        let now = Date().now
+        if (now - previous >= delay) {
+            func.apply(context, args)
+            previous = now
+        }
     }
 }
 

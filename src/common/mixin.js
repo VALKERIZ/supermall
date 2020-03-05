@@ -1,4 +1,4 @@
-import { debounce } from 'common/utils'
+import { debounce, throttle } from 'common/utils'
 import BackTop from 'components/content/backTop/BackTop'
 import { TOP_DISTANCE } from 'common/const'
 
@@ -7,7 +7,7 @@ export const itemListenerMixin = {
     data() {
         return {
             itemImgListener: null,
-            newRefresh: null
+            newRefresh: null,
         }
     },
     mounted() {
@@ -19,6 +19,11 @@ export const itemListenerMixin = {
             this.newRefresh()
         }
         this.$bus.$on('itemImageLoad', this.itemImgListener)
+
+        // // 节流函数
+        // this.clickToCart = throttle(this.addCar(this.product).then(res => {
+        //     this.$toast.show(res)
+        // }), 2000)
     }
 }
 

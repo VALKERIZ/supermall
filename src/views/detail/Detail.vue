@@ -32,6 +32,7 @@ import GoodsList from 'components/content/goods/GoodsList'
 import {getDetail, getRecommend, Goods, Shop, GoodsParam} from 'network/detail'
 import { debounce } from 'common/utils'
 import {itemListenerMixin,backTopMixin} from 'common/mixin'
+import { mapActions} from 'vuex'
 
 
 export default {
@@ -107,6 +108,9 @@ export default {
     this.$bus.$off('itemImageLoad', this.itemImgListener)
   },
   methods:{
+    // 映射vuex的actions
+    ...mapActions(['addCar']),
+
     // 详细图片加载完成后刷新scrollerHight，防抖处理
     imageLoad(){
       this.newRefresh()
@@ -154,11 +158,15 @@ export default {
       product.title = this.goods.title
       product.desc = this.goods.desc
       product.price = this.goods.realPrice
-      console.log(product);
-
+      
       // 2.将商品添加到购物车
-      this.$store.dispatch('addCar', product)
-    }
+      // this.$store.dispatch('addCar', product).then( res => {
+      //   console.log(res);
+      // })
+      this.addCar(product).then(res => {
+          this.$toast.show(res)
+        })
+    },
   }
 }
 </script>
